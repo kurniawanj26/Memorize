@@ -15,29 +15,29 @@ struct ContentView: View {
             CardView()
             CardView()
         }
+        .foregroundStyle(Color(.systemPink))
+        .padding()
     }
 }
 
 struct CardView: View {
-    var isFaceUp: Bool = false
+    @State var isFaceUp: Bool = false
     
     var body: some View {
         ZStack {
+            let card: RoundedRectangle = RoundedRectangle(cornerRadius: 12)
             if isFaceUp {
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundStyle(Color(.white))
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(lineWidth: 2)
+                card.fill(Color(.white))
+                card.stroke(lineWidth: 2)
                 
                 Text("🚀").font(.largeTitle)
             } else {
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundStyle(Color(.systemPink))
+                card
             }
-            
         }
-        .foregroundColor(.pink)
-        .padding()
+        .onTapGesture {
+            isFaceUp.toggle()
+        }
     }
 }
 
