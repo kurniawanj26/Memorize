@@ -9,11 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
+        let emojis = ["👾", "💀", "🤖", "🎃", "👽"]
+        // or it can be written this way :
+        // let emojis: [String] = ["👾", "💀", "🤖", "🎃"]
+        // let emojis: Array<String> = ["👾", "💀", "🤖", "🎃"]
+        
         HStack {
-            CardView(isFaceUp: true)
-            CardView()
-            CardView()
-            CardView()
+            // ForEach is a struct that 'behaves' like a View
+            // ForEach(0..<4, id: \.self) { index in
+            // instead of using 0..<4 there is anothe way to get the indexes like below code
+            // it's more dynamic
+            ForEach(emojis.indices, id: \.self) { index in
+                CardView(content: emojis[index])
+            }
         }
         .foregroundStyle(Color(.systemPink))
         .padding()
@@ -21,7 +29,8 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    @State var isFaceUp: Bool = false
+    let content: String
+    @State var isFaceUp: Bool = true
     
     var body: some View {
         ZStack {
@@ -29,8 +38,7 @@ struct CardView: View {
             if isFaceUp {
                 card.fill(Color(.white))
                 card.stroke(lineWidth: 2)
-                
-                Text("🚀").font(.largeTitle)
+                Text(content).font(.largeTitle)
             } else {
                 card
             }
