@@ -9,6 +9,7 @@ import Foundation
 
 struct MemorizeGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>
+    private(set) var score = 0
     
     // function as a type
     // cardContentFacrtory: () -> CardContent
@@ -29,9 +30,18 @@ struct MemorizeGame<CardContent> where CardContent: Equatable {
         if let chosenIndex = cards.firstIndex(where: {$0.id  == card.id}) {
             if !cards[chosenIndex].isFaceUp && !cards[chosenIndex].isMatched {
                 if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
+                    // MARK: correct
                     if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
+                        score += 2
+                    } else {
+                        if cards[chosenIndex].hasBeenSeen {
+                            score -= 1
+                        }
+                        if cards[potentialMatchIndex].hasBeenSeen {
+                            score -= 1
+                        }
                     }
                     indexOfTheOneAndOnlyFaceUpCard = nil
                 } else {
@@ -52,8 +62,15 @@ struct MemorizeGame<CardContent> where CardContent: Equatable {
     
     // nested card, this is allowed and good for namespacing
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible  {
-        var isFaceUp = true
+        var isFaceUp = false {
+            didSet {
+                if oldValue && !isFaceUp {
+                    hasBeenSeen = true
+                }
+            }
+        }
         var isMatched = false
+        var hasBeenSeen = false
         let content: CardContent
         
         var id: String
